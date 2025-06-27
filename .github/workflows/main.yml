@@ -24,6 +24,9 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
+      - name: Export static site
+        run: npm run export
+
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
@@ -32,6 +35,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           protocol: ftp
-          local-dir: ./
+          local-dir: ./out
           server-dir: /
           dangerous-clean-slate: false
