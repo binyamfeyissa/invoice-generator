@@ -32,6 +32,6 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           port: ${{ secrets.FTP_PORT }}
           protocol: ftp
-          local-dir: ./out
-          server-dir: /public_html/invoice-generator/
+          local-dir: ./out/
+          server-dir: /
           dangerous-clean-slate: false
