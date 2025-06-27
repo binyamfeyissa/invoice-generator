@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Invoice Editor | Customize Your Invoice',
-  description: 'Edit invoice details, preview templates, and download your invoice as a PDF. Fully customizable and easy to use.',
+  description: 'Edit invoice details, preview templates, and download your invoice as a PDF. Fully customizable and easy to use',
   keywords: 'invoice editor, edit invoice, invoice template, PDF invoice, customize invoice',
   openGraph: {
     title: 'Invoice Editor | Customize Your Invoice',
