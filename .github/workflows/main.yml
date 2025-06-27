@@ -21,11 +21,8 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Build Next.js app
+      - name: Build static site
         run: npm run build
-
-      - name: Export static site
-        run: npm run export
 
       - name: Deploy to cPanel via FTP
         uses: SamKirkland/FTP-Deploy-Action@v4.3.4
@@ -36,5 +33,5 @@ jobs:
           port: ${{ secrets.FTP_PORT }}
           protocol: ftp
           local-dir: ./out
-          server-dir: /
+          server-dir: /public_html/invoice-generator/
           dangerous-clean-slate: false
