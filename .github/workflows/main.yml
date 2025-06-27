@@ -24,24 +24,14 @@ jobs:
       - name: Build Next.js app
         run: npm run build
 
-      - name: Upload files via SSH
-        uses: appleboy/scp-action@v0.1.7
+      - name: Deploy to cPanel via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.CPANEL_USER }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}
-          port: 22
-          source: ".next,public,package.json,app,components,lib,styles"
-          target: "public_html/invoice-generator"
-          rm: true
-
-      - name: Install dependencies on server (optional)
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.CPANEL_HOST }}
-          username: ${{ secrets.CPANEL_USER }}
-          key: ${{ secrets.CPANEL_SSH_KEY }}
-          port: 22
-          script: |
-            cd public_html/invoice-generator
-            npm install --production
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          port: ${{ secrets.FTP_PORT }}
+          protocol: ftp
+          local-dir: ./
+          server-dir: /public_html/invoice-generator/
+          dangerous-clean-slate: false
