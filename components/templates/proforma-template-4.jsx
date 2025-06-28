@@ -64,33 +64,49 @@ const InvoiceFooter = () => (
 )
 
 // --- FINAL SECTIONS: Only for the last page ---
-const FinalSections = () => (
-  <div className="mt-auto">
-    <section className="pt-8 flex justify-between items-end">
-      <div className="text-xs">
-        <div className="bg-green-600 text-white font-bold py-1 px-3 mb-2 text-[11px]">
-          PAYMENT METHOD:
+const FinalSections = ({ data }) => {
+  const bankOptions = {
+    DASHEN: { name: "DASHEN BANK (BINIYAM JEGNAW)", number: "5136322229011" },
+    CBE: { name: "CBE (mars retail trade of construction materials)", number: "1000619377617" },
+    AWASH: { name: "AWASH BANK (BINIYAM JEGNAW)", number: "13040457265900" },
+    GADDA: { name: "GADDA BANK (BINIYAM JEGNAW)", number: "1000002358011" },
+    SIINQEE: { name: "SIINQEE BANK (BINIYAM JEGNAW)", number: "1067859731210" },
+    AMHARA: { name: "AMHARA BANK (BINIYAM JEGNAW)", number: "9900030525071" },
+    HIBRET: { name: "HIBRET BANK (BINIYAM JEGNAW)", number: "1371813926040015" },
+    CUSTOM: { name: data?.customBankName || "Custom Bank", number: data?.customBankNumber || "" }
+  };
+  const selectedBank = bankOptions[data?.bank] || bankOptions.DASHEN;
+  return (
+    <div className="mt-auto">
+      <section className="pt-8 flex justify-between items-end">
+        <div className="text-xs">
+        <p className="font-semibold">Amount in words: {data?.amountInWords || <span className="italic text-gray-400">Enter amount in words</span>}</p>
+          <p className="font-semibold">This proforma is valid for {data?.validityDays || <span className="italic text-gray-400">__</span>}  days only.</p>
+          <p className="font-semibold">Prepared by: {data?.preparedBy || <span className="italic text-gray-400">Enter name</span>}</p>
+          <div className="bg-green-600 text-white font-bold py-1 px-3 mb-2 text-[11px] mt-2">
+            PAYMENT METHOD:
+          </div>
+          <p className="font-semibold">Bank Name: {selectedBank.name}</p>
+          <p className="font-semibold">Account Number: {selectedBank.number}</p>
+          <p className="font-bold">Thank you for working with us!</p>
+          <p className="font-bold">Terms and Conditions:</p>
+          <p className="text-[11px]">{data?.terms || "Deposit before delivery"}</p>
         </div>
-        <p className="font-semibold">Bank Name: DASHEN BANK (BINIYAM JEGNAW)</p>
-        <p className="font-semibold">Account Number: 5136322229011</p>
-        <p className="font-bold">Thank you for working with us!</p>
-        <p className="font-bold">Terms and Conditions:</p>
-        <p className="text-[11px]">Deposit before delivery</p>
-      </div>
-      <div className="text-center">
-        <Image src="/images/stamp.png" alt="Company Stamp" width={90} height={90} className="ml-4"/>
-        <p className="text-xs font-bold mt-2">BINIYAM JEGNAW</p>
-        <p className="text-[11px]">GENERAL MANAGER</p>
-      </div>
-    </section>
-  </div>
-)
+        <div className="text-center">
+          <Image src="/images/stamp.png" alt="Company Stamp" width={90} height={90} className="ml-4"/>
+          <p className="text-xs font-bold mt-2">BINIYAM JEGNAW</p>
+          <p className="text-[11px]">GENERAL MANAGER</p>
+        </div>
+      </section>
+    </div>
+  );
+}
 const FINAL_SECTIONS_THRESHOLD = 1
 // --- The new, robust pagination logic with custom rules ---
 const paginate = (items) => {
   const FIRST_PAGE_CAPACITY = 12
   const INTERMEDIATE_PAGE_CAPACITY = 15
-  const FINAL_PAGE_CAPACITY = 12
+  const FINAL_PAGE_CAPACITY = 9
   const FINAL_SECTIONS_THRESHOLD = 12 // Show FinalSections on the same page if <= 12 items
 
   if (!items || items.length === 0) return [[]]
@@ -134,8 +150,8 @@ const ProformaTemplate4 = ({ data, notValid }) => {
 
   if (paginatedItems.length === 1) {
     // Only one page: threshold is 7
-    showFinalSectionsOnNewPage = firstPageItems.length > 7
-  } else if (firstPageItems.length > 7) {
+    showFinalSectionsOnNewPage = firstPageItems.length > 6
+  } else if (firstPageItems.length > 6) {
     // Multi-page: use previous logic
     showFinalSectionsOnNewPage = lastPageItems.length > FINAL_PAGE_CAPACITY
   } else {
@@ -216,7 +232,7 @@ const ProformaTemplate4 = ({ data, notValid }) => {
             </section>
 
             {/* Only show FinalSections on the last page if it should NOT be on a new page */}
-            {pageIndex === paginatedItems.length - 1 && !showFinalSectionsOnNewPage && <FinalSections />}
+            {pageIndex === paginatedItems.length - 1 && !showFinalSectionsOnNewPage && <FinalSections data={data} />}
           </main>
 
           <InvoiceFooter />
@@ -247,7 +263,7 @@ const ProformaTemplate4 = ({ data, notValid }) => {
             <RepeatingHeader />
           </header>
           <main className="flex-grow flex flex-col min-h-0">
-            <FinalSections />
+            <FinalSections data={data} />
           </main>
           <InvoiceFooter />
         </div>

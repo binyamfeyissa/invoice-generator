@@ -4,6 +4,21 @@ import { Label } from "@/components/ui/label"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Trash2, PlusCircle } from "lucide-react"
+import { useEffect } from "react"
+
+// Helper function to convert number to words (simple version for ETB)
+function numberToWords(num) {
+  if (typeof num !== "number" || isNaN(num)) return "";
+  const ones = ["zero","one","two","three","four","five","six","seven","eight","nine"];
+  const tens = ["", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+  const teens = ["ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+  if (num < 10) return ones[num];
+  if (num < 20) return teens[num - 10];
+  if (num < 100) return tens[Math.floor(num / 10)] + (num % 10 ? "-" + ones[num % 10] : "");
+  if (num < 1000) return ones[Math.floor(num / 100)] + " hundred" + (num % 100 ? " and " + numberToWords(num % 100) : "");
+  if (num < 1000000) return numberToWords(Math.floor(num / 1000)) + " thousand" + (num % 1000 ? " " + numberToWords(num % 1000) : "");
+  return num.toString();
+}
 
 export default function InvoiceForm({ data, setData }) {
   const handleClientChange = (e) => {
@@ -35,6 +50,55 @@ export default function InvoiceForm({ data, setData }) {
     items.splice(index, 1)
     setData({ ...data, items })
   }
+
+  useEffect(() => {
+    // Calculate subtotal
+    const subtotal = data.items.reduce((acc, item) => acc + (parseFloat(item.price) || 0) * (parseFloat(item.qty) || 0), 0);
+    const taxAmount = (subtotal * (parseFloat(data.taxRate) || 0)) / 100;
+    const total = subtotal + taxAmount;
+    // Only auto-fill if user hasn't typed in amountInWords or it's empty
+    if (!data.amountInWords || data.amountInWordsAuto) {
+      setData(prev => ({
+        ...prev,
+        amountInWords: numberToWords(Math.round(total)) + " birr only",
+        amountInWordsAuto: true
+      }));
+    }
+    // eslint-disable-next-line
+  }, [data.items, data.taxRate]);
+
+  // If user edits the field, remove the auto flag
+  const handleAmountInWordsChange = (e) => {
+    setData({ ...data, amountInWords: e.target.value, amountInWordsAuto: false });
+  };
+
+  // Set default values for validityDays, preparedBy, terms, and bank if not set
+  useEffect(() => {
+    if (!data.validityDays || data.validityDays === "") {
+      setData(prev => ({ ...prev, validityDays: "10" }));
+    }
+    if (!data.preparedBy || data.preparedBy === "") {
+      setData(prev => ({ ...prev, preparedBy: "BINIYAM JEGNAW" }));
+    }
+    if (!data.terms || data.terms === "") {
+      setData(prev => ({ ...prev, terms: "Deposit before delivery" }));
+    }
+    if (!data.bank || data.bank === "") {
+      setData(prev => ({ ...prev, bank: "DASHEN" }));
+    }
+    // eslint-disable-next-line
+  }, []);
+
+  const bankOptions = [
+    { value: "DASHEN", label: "DASHEN BANK (BINIYAM JEGNAW)", number: "5136322229011" },
+    { value: "CBE", label: "CBE (mars retail trade of construction materials)", number: "1000619377617" },
+    { value: "AWASH", label: "AWASH BANK (BINIYAM JEGNAW)", number: "13040457265900" },
+    { value: "GADDA", label: "GADDA BANK (BINIYAM JEGNAW)", number: "1000002358011" },
+    { value: "SIINQEE", label: "SIINQEE BANK (BINIYAM JEGNAW)", number: "1067859731210" },
+    { value: "AMHARA", label: "AMHARA BANK (BINIYAM JEGNAW)", number: "9900030525071" },
+    { value: "HIBRET", label: "HIBRET BANK (BINIYAM JEGNAW)", number: "1371813926040015" },
+    { value: "CUSTOM", label: "Custom Bank", number: "" }
+  ];
 
   return (
     <div className="space-y-6">
@@ -88,6 +152,76 @@ export default function InvoiceForm({ data, setData }) {
             />
             <Label htmlFor="notValid" className="text-xs font-medium text-gray-700">Show NOT VALID Watermark</Label>
           </div>
+          {/* New fields for amount in words, validity days, prepared by */}
+          <div className="space-y-2 pt-4">
+            <Label htmlFor="amountInWords">Amount in Words</Label>
+            <Input
+              id="amountInWords"
+              name="amountInWords"
+              value={data.amountInWords || ''}
+              onChange={handleAmountInWordsChange}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="validityDays">Proforma Validity (days)</Label>
+            <Input
+              id="validityDays"
+              name="validityDays"
+              type="number"
+              value={data.validityDays || '10'}
+              onChange={e => setData({ ...data, validityDays: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="preparedBy">Prepared By</Label>
+            <Input
+              id="preparedBy"
+              name="preparedBy"
+              value={data.preparedBy || 'BINIYAM JEGNAW'}
+              onChange={e => setData({ ...data, preparedBy: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="terms">Terms and Conditions</Label>
+            <Input
+              id="terms"
+              name="terms"
+              value={data.terms || 'Deposit before delivery'}
+              onChange={e => setData({ ...data, terms: e.target.value })}
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="bank">Bank Account</Label>
+            <select
+              id="bank"
+              name="bank"
+              className="w-full border rounded px-2 py-1"
+              value={data.bank || 'DASHEN'}
+              onChange={e => setData({ ...data, bank: e.target.value })}
+            >
+              {bankOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+          </div>
+          {data.bank === 'CUSTOM' && (
+            <div className="space-y-2">
+              <Label htmlFor="customBankName">Custom Bank Name (Account owner name)</Label>
+              <Input
+                id="customBankName"
+                name="customBankName"
+                value={data.customBankName || ''}
+                onChange={e => setData({ ...data, customBankName: e.target.value })}
+              />
+              <Label htmlFor="customBankNumber">Custom Bank Account Number</Label>
+              <Input
+                id="customBankNumber"
+                name="customBankNumber"
+                value={data.customBankNumber || ''}
+                onChange={e => setData({ ...data, customBankNumber: e.target.value })}
+              />
+            </div>
+          )}
         </CardContent>
       </Card>
 

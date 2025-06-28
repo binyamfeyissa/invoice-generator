@@ -61,25 +61,51 @@ const InvoiceFooter = () => (
 )
 
 // --- FINAL SECTIONS: Only for the last page ---
-const FinalSections = () => (
-  <div className="mt-auto flex justify-between items-end pt-6">
-    <div className="w-1/2">
-      <p className="font-bold text-sm">Terms and Conditions:</p>
-      <p className="text-xs">Deposit before delivery</p>
-      <div className="mt-4">
-        <p className="font-bold text-sm">Payment Method:</p>
-        <p className="text-xs">Account Number: 5136322229011</p>
+const FinalSections = ({ data }) => {
+  const bankOptions = {
+    DASHEN: { name: "DASHEN BANK (BINIYAM JEGNAW)", number: "5136322229011" },
+    CBE: { name: "CBE (mars retail trade of construction materials)", number: "1000619377617" },
+    AWASH: { name: "AWASH BANK (BINIYAM JEGNAW)", number: "13040457265900" },
+    GADDA: { name: "GADDA BANK (BINIYAM JEGNAW)", number: "1000002358011" },
+    SIINQEE: { name: "SIINQEE BANK (BINIYAM JEGNAW)", number: "1067859731210" },
+    AMHARA: { name: "AMHARA BANK (BINIYAM JEGNAW)", number: "9900030525071" },
+    HIBRET: { name: "HIBRET BANK (BINIYAM JEGNAW)", number: "1371813926040015" },
+    CUSTOM: { name: data?.customBankName || "Custom Bank", number: data?.customBankNumber || "" }
+  };
+  const selectedBank = bankOptions[data?.bank] || bankOptions.DASHEN;
+  return (
+    <div className="mt-auto flex justify-between items-end pt-6">
+      <div className="w-1/2">
+        <div className="mb-2 text-xs">
+          <span className="font-bold">Amount in words:</span> {data?.amountInWords || <span className="italic text-gray-400">Enter amount in words</span>}
+        </div>
+        <div className="mb-2 text-xs">
+          <span className="font-bold">This proforma is valid for </span>
+          {data?.validityDays || <span className="italic text-gray-400">__</span>}
+          <span className="font-bold"> days only.</span>
+        </div>
+        <div className="mb-2 text-xs">
+          <span className="font-bold">Prepared by:</span> {data?.preparedBy || <span className="italic text-gray-400">Enter name</span>}
+        </div>
+        <div className="bg-orange-500 text-white font-bold py-1 px-3 mb-2 text-[11px] mt-2">
+          PAYMENT METHOD:
+        </div>
+        <p className="font-semibold">Bank Name: {selectedBank.name}</p>
+        <p className="font-semibold">Account Number: {selectedBank.number}</p>
+        <p className="font-bold">Thank you for working with us!</p>
+        <p className="font-bold">Terms and Conditions:</p>
+        <p className="text-[11px]">{data?.terms || "Deposit before delivery"}</p>
+      </div>
+      <div className="w-1/2 flex justify-end">
+        <div className="text-center">
+          <Image src="/images/stamp.png" alt="Company Stamp" width={100} height={100} />
+          <p className="font-bold mt-2 text-sm">BINIYAM JEGNAW</p>
+          <p className="text-xs text-gray-500">GENERAL MANAGER</p>
+        </div>
       </div>
     </div>
-    <div className="w-1/2 flex justify-end">
-      <div className="text-center">
-        <Image src="/images/stamp.png" alt="Company Stamp" width={100} height={100} />
-        <p className="font-bold mt-2 text-sm">BINIYAM JEGNAW</p>
-        <p className="text-xs text-gray-500">GENERAL MANAGER</p>
-      </div>
-    </div>
-  </div>
-)
+  );
+}
 
 // --- The robust pagination logic ---
 const paginate = (items) => {
@@ -195,7 +221,7 @@ const ProformaTemplate2 = ({ data }) => {
               </table>
             </section>
 
-            {pageIndex === paginatedItems.length - 1 && <FinalSections />}
+            {pageIndex === paginatedItems.length - 1 && <FinalSections data={data} />}
           </main>
 
           <InvoiceFooter />
