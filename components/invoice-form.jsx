@@ -35,13 +35,17 @@ export default function InvoiceForm({ data, setData }) {
     const { name, value } = e.target
     const items = [...data.items]
     items[index][name] = value
+    // If unit is changed and not 'CUSTOM', clear customUnit
+    if (name === 'unit' && value !== 'CUSTOM') {
+      items[index].customUnit = ''
+    }
     setData({ ...data, items })
   }
 
   const handleAddItem = () => {
     setData({
       ...data,
-      items: [...data.items, { product: "", price: 0, qty: 1 }],
+      items: [...data.items, { product: '', unit: 'PICS', customUnit: '', price: 0, qty: 1 }],
     })
   }
 
@@ -250,16 +254,29 @@ export default function InvoiceForm({ data, setData }) {
                     onChange={(e) => handleItemChange(index, e)}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-3 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor={`price-${index}`}>Price</Label>
-                    <Input
-                      id={`price-${index}`}
-                      name="price"
-                      type="number"
-                      value={item.price}
+                    <Label htmlFor={`unit-${index}`}>Unit</Label>
+                    <select
+                      id={`unit-${index}`}
+                      name="unit"
+                      className="w-full border rounded px-2 py-1"
+                      value={item.unit || 'PICS'}
                       onChange={(e) => handleItemChange(index, e)}
-                    />
+                    >
+                      <option value="PICS">PICS</option>
+                      <option value="meter">meter</option>
+                      <option value="CUSTOM">Custom</option>
+                    </select>
+                    {item.unit === 'CUSTOM' && (
+                      <Input
+                        className="mt-2"
+                        placeholder="Enter custom unit"
+                        name="customUnit"
+                        value={item.customUnit || ''}
+                        onChange={(e) => handleItemChange(index, e)}
+                      />
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor={`qty-${index}`}>Qty</Label>
@@ -268,6 +285,16 @@ export default function InvoiceForm({ data, setData }) {
                       name="qty"
                       type="number"
                       value={item.qty}
+                      onChange={(e) => handleItemChange(index, e)}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor={`price-${index}`}>Price</Label>
+                    <Input
+                      id={`price-${index}`}
+                      name="price"
+                      type="number"
+                      value={item.price}
                       onChange={(e) => handleItemChange(index, e)}
                     />
                   </div>

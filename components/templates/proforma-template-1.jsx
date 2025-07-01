@@ -141,9 +141,20 @@ const paginate = (items) => {
 
 const ProformaTemplate1 = ({ data, notValid }) => {
   const paginatedItems = paginate(data.items)
-  const subtotal = data.items.reduce((acc, item) => acc + (item.price || 0) * (item.qty || 0), 0)
-  const taxAmount = (subtotal * data.taxRate) / 100
-  const total = subtotal + taxAmount
+  const taxRate = data.taxRate || 0
+  // Calculate pre-tax price and tax from price with tax included
+  const subtotal = data.items.reduce((acc, item) => {
+    const unitPriceWithTax = item.price || 0
+    const unitPriceWithoutTax = unitPriceWithTax / (1 + taxRate / 100)
+    return acc + unitPriceWithoutTax * (item.qty || 0)
+  }, 0)
+  const totalTax = data.items.reduce((acc, item) => {
+    const unitPriceWithTax = item.price || 0
+    const unitPriceWithoutTax = unitPriceWithTax / (1 + taxRate / 100)
+    const taxAmountPerUnit = unitPriceWithTax - unitPriceWithoutTax
+    return acc + taxAmountPerUnit * (item.qty || 0)
+  }, 0)
+  const total = subtotal + totalTax
 
   const firstPageItems = paginatedItems[0]
   const lastPageItems = paginatedItems[paginatedItems.length - 1]
@@ -197,37 +208,46 @@ const ProformaTemplate1 = ({ data, notValid }) => {
                   <tr className="bg-gray-800 text-white">
                     <th className="p-2 font-semibold text-xs">NO.</th>
                     <th className="p-2 font-semibold text-xs">ITEMS</th>
+                    <th className="p-2 font-semibold text-xs">UNIT</th>
                     <th className="p-2 text-right font-semibold text-xs">QTY</th>
                     <th className="p-2 text-right font-semibold text-xs">UNIT PRICE</th>
                     <th className="p-2 text-right font-semibold text-xs">TOTAL PRICE</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {pageItems.map((item, index) => (
-                    <tr key={index} className="border-b">
-                      <td className="p-2 text-xs">{index + 1}</td>
-                      <td className="p-2 text-xs">{item.product}</td>
-                      <td className="p-2 text-right text-xs">{item.qty || 0}</td>
-                      <td className="p-2 text-right text-xs">{Number.parseFloat(item.price || 0).toFixed(2)}</td>
-                      <td className="p-2 text-right text-xs">{((item.price || 0) * (item.qty || 0)).toFixed(2)}</td>
-                    </tr>
-                  ))}
+                  {pageItems.map((item, index) => {
+                    // Find the global index of this item in the original data.items array
+                    const globalIndex = data.items.indexOf(item)
+                    const unitPriceWithTax = Number(item.price) || 0
+                    const unitPriceWithoutTax = unitPriceWithTax / (1 + taxRate / 100)
+                    const taxAmountPerUnit = unitPriceWithTax - unitPriceWithoutTax
+                    return (
+                      <tr key={index} className="border-b">
+                        <td className="p-2 text-xs">{globalIndex + 1}</td>
+                        <td className="p-2 text-xs">{item.product}</td>
+                        <td className="p-2 text-xs">{item.unit === 'CUSTOM' ? item.customUnit : item.unit}</td>
+                        <td className="p-2 text-right text-xs">{item.qty || 0}</td>
+                        <td className="p-2 text-right text-xs">{unitPriceWithoutTax.toFixed(2)}</td>
+                        <td className="p-2 text-right text-xs">{(unitPriceWithoutTax * (item.qty || 0)).toFixed(2)}</td>
+                      </tr>
+                    )
+                  })}
                 </tbody>
                 {pageIndex === paginatedItems.length - 1 && (
                   <tfoot>
                     <tr className="border-t-2 border-gray-400">
-                      <td colSpan="3" />
-                      <td className="p-2 text-right text-xs font-bold">SUBTOTAL</td>
+                      <td colSpan="4" />
+                      <td className="p-2 text-right text-xs font-bold">Sub Total</td>
                       <td className="p-2 text-right text-xs">{subtotal.toFixed(2)}</td>
                     </tr>
                     <tr>
-                      <td colSpan="3" />
-                      <td className="p-2 text-right text-xs font-bold">TAX ({data.taxRate}%)</td>
-                      <td className="p-2 text-right text-xs">{taxAmount.toFixed(2)}</td>
+                      <td colSpan="4" />
+                      <td className="p-2 text-right text-xs font-bold">VAT ({taxRate.toFixed(2)}%)</td>
+                      <td className="p-2 text-right text-xs">{totalTax.toFixed(2)}</td>
                     </tr>
                     <tr className="bg-gray-800 text-white">
-                      <td colSpan="3" />
-                      <td className="p-2 text-right text-xs font-bold">TOTAL</td>
+                      <td colSpan="4" />
+                      <td className="p-2 text-right text-xs font-bold">Grand Total</td>
                       <td className="p-2 text-right text-xs font-bold">{total.toFixed(2)}</td>
                     </tr>
                   </tfoot>
