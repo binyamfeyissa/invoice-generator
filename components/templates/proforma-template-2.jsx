@@ -183,38 +183,40 @@ const ProformaTemplate2 = ({ data }) => {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b-2 border-gray-200">
-                    <th className="p-2 text-sm font-semibold text-gray-500 uppercase">Product</th>
-                    <th className="p-2 text-right text-sm font-semibold text-gray-500 uppercase">Price</th>
-                    <th className="p-2 text-right text-sm font-semibold text-gray-500 uppercase">Qty</th>
-                    <th className="p-2 text-right text-sm font-semibold text-gray-500 uppercase">Total</th>
+                    <th className="p-2 text-sm font-semibold text-gray-500 uppercase">NO.</th>
+                    <th className="p-2 text-sm font-semibold text-gray-500 uppercase">ITEMS</th>
+                    <th className="p-2 text-right text-sm font-semibold text-gray-500 uppercase">QTY</th>
+                    <th className="p-2 text-right text-sm font-semibold text-gray-500 uppercase">UNIT PRICE</th>
+                    <th className="p-2 text-right text-sm font-semibold text-gray-500 uppercase">TOTAL PRICE</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pageItems.map((item, index) => (
                     <tr key={index} className="border-b border-gray-100">
+                      <td className="p-2 text-sm">{index + 1}</td>
                       <td className="p-2 text-sm">{item.product}</td>
-                      <td className="p-2 text-right text-sm">ETB {Number.parseFloat(item.price || 0).toFixed(2)}</td>
                       <td className="p-2 text-right text-sm">{item.qty || 0}</td>
-                      <td className="p-2 text-right text-sm">ETB {((item.price || 0) * (item.qty || 0)).toFixed(2)}</td>
+                      <td className="p-2 text-right text-sm">{Number.parseFloat(item.price || 0).toFixed(2)}</td>
+                      <td className="p-2 text-right text-sm">{((item.price || 0) * (item.qty || 0)).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
                 {pageIndex === paginatedItems.length - 1 && (
                   <tfoot>
                     <tr>
-                      <td colSpan="2" />
+                      <td colSpan="3" />
                       <td className="p-2 text-right text-sm text-gray-600">Subtotal</td>
-                      <td className="p-2 text-right text-sm">ETB {subtotal.toFixed(2)}</td>
+                      <td className="p-2 text-right text-sm">{subtotal.toFixed(2)}</td>
                     </tr>
                     <tr>
-                      <td colSpan="2" />
+                      <td colSpan="3" />
                       <td className="p-2 text-right text-sm text-gray-600">Tax ({data.taxRate}%)</td>
-                      <td className="p-2 text-right text-sm">ETB {taxAmount.toFixed(2)}</td>
+                      <td className="p-2 text-right text-sm">{taxAmount.toFixed(2)}</td>
                     </tr>
                     <tr className="font-bold">
-                      <td colSpan="2" />
+                      <td colSpan="3" />
                       <td className="p-2 text-right text-base">Total</td>
-                      <td className="p-2 text-right text-base">ETB {total.toFixed(2)}</td>
+                      <td className="p-2 text-right text-base">{total.toFixed(2)}</td>
                     </tr>
                   </tfoot>
                 )}

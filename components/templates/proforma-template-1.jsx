@@ -195,38 +195,40 @@ const ProformaTemplate1 = ({ data, notValid }) => {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-gray-800 text-white">
-                    <th className="p-2 font-semibold text-xs">PRODUCT</th>
-                    <th className="p-2 text-right font-semibold text-xs">PRICE</th>
+                    <th className="p-2 font-semibold text-xs">NO.</th>
+                    <th className="p-2 font-semibold text-xs">ITEMS</th>
                     <th className="p-2 text-right font-semibold text-xs">QTY</th>
-                    <th className="p-2 text-right font-semibold text-xs">TOTAL</th>
+                    <th className="p-2 text-right font-semibold text-xs">UNIT PRICE</th>
+                    <th className="p-2 text-right font-semibold text-xs">TOTAL PRICE</th>
                   </tr>
                 </thead>
                 <tbody>
                   {pageItems.map((item, index) => (
                     <tr key={index} className="border-b">
+                      <td className="p-2 text-xs">{index + 1}</td>
                       <td className="p-2 text-xs">{item.product}</td>
-                      <td className="p-2 text-right text-xs">ETB {Number.parseFloat(item.price || 0).toFixed(2)}</td>
                       <td className="p-2 text-right text-xs">{item.qty || 0}</td>
-                      <td className="p-2 text-right text-xs">ETB {((item.price || 0) * (item.qty || 0)).toFixed(2)}</td>
+                      <td className="p-2 text-right text-xs">{Number.parseFloat(item.price || 0).toFixed(2)}</td>
+                      <td className="p-2 text-right text-xs">{((item.price || 0) * (item.qty || 0)).toFixed(2)}</td>
                     </tr>
                   ))}
                 </tbody>
                 {pageIndex === paginatedItems.length - 1 && (
                   <tfoot>
                     <tr className="border-t-2 border-gray-400">
-                      <td colSpan="2" />
+                      <td colSpan="3" />
                       <td className="p-2 text-right text-xs font-bold">SUBTOTAL</td>
-                      <td className="p-2 text-right text-xs">ETB {subtotal.toFixed(2)}</td>
+                      <td className="p-2 text-right text-xs">{subtotal.toFixed(2)}</td>
                     </tr>
                     <tr>
-                      <td colSpan="2" />
+                      <td colSpan="3" />
                       <td className="p-2 text-right text-xs font-bold">TAX ({data.taxRate}%)</td>
-                      <td className="p-2 text-right text-xs">ETB {taxAmount.toFixed(2)}</td>
+                      <td className="p-2 text-right text-xs">{taxAmount.toFixed(2)}</td>
                     </tr>
                     <tr className="bg-gray-800 text-white">
-                      <td colSpan="2" />
+                      <td colSpan="3" />
                       <td className="p-2 text-right text-xs font-bold">TOTAL</td>
-                      <td className="p-2 text-right text-xs font-bold">ETB {total.toFixed(2)}</td>
+                      <td className="p-2 text-right text-xs font-bold">{total.toFixed(2)}</td>
                     </tr>
                   </tfoot>
                 )}
