@@ -212,7 +212,7 @@ const ProformaTemplate2 = ({ data }) => {
                       <tr key={index} className="border-b border-gray-100">
                         <td className="p-2 text-sm">{globalIndex + 1}</td>
                         <td className="p-2 text-sm">{item.product}</td>
-                        <td className="p-2 text-sm">{item.unit === 'CUSTOM' ? item.customUnit : item.unit}</td>
+                        <td className="p-2 text-sm">{item.unit === 'CUSTOM' ? item.customUnit : (item.unit || 'PCS')}</td>
                         <td className="p-2 text-right text-sm">{item.qty || 0}</td>
                         <td className="p-2 text-right text-sm">{unitPriceWithoutTax.toFixed(2)}</td>
                         <td className="p-2 text-right text-sm">{(unitPriceWithoutTax * (item.qty || 0)).toFixed(2)}</td>

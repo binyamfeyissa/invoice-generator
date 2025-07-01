@@ -45,7 +45,7 @@ export default function InvoiceForm({ data, setData }) {
   const handleAddItem = () => {
     setData({
       ...data,
-      items: [...data.items, { product: '', unit: 'PICS', customUnit: '', price: 0, qty: 1 }],
+      items: [...data.items, { product: '', unit: 'PCS', customUnit: '', price: 0, qty: 1 }],
     })
   }
 
@@ -261,10 +261,10 @@ export default function InvoiceForm({ data, setData }) {
                       id={`unit-${index}`}
                       name="unit"
                       className="w-full border rounded px-2 py-1"
-                      value={item.unit || 'PICS'}
+                      value={item.unit || 'PCS'}
                       onChange={(e) => handleItemChange(index, e)}
                     >
-                      <option value="PICS">PICS</option>
+                      <option value="PCS">PCS</option>
                       <option value="meter">meter</option>
                       <option value="CUSTOM">Custom</option>
                     </select>
