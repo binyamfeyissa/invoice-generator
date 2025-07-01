@@ -56,15 +56,25 @@ export default function InvoiceForm({ data, setData }) {
   }
 
   useEffect(() => {
-    // Calculate subtotal
-    const subtotal = data.items.reduce((acc, item) => acc + (parseFloat(item.price) || 0) * (parseFloat(item.qty) || 0), 0);
-    const taxAmount = (subtotal * (parseFloat(data.taxRate) || 0)) / 100;
-    const total = subtotal + taxAmount;
+    // Calculate grand total using new logic (unit price includes tax)
+    const taxRate = parseFloat(data.taxRate) || 0;
+    const subtotal = data.items.reduce((acc, item) => {
+      const unitPriceWithTax = parseFloat(item.price) || 0;
+      const unitPriceWithoutTax = unitPriceWithTax / (1 + taxRate / 100);
+      return acc + unitPriceWithoutTax * (parseFloat(item.qty) || 0);
+    }, 0);
+    const totalTax = data.items.reduce((acc, item) => {
+      const unitPriceWithTax = parseFloat(item.price) || 0;
+      const unitPriceWithoutTax = unitPriceWithTax / (1 + taxRate / 100);
+      const taxAmountPerUnit = unitPriceWithTax - unitPriceWithoutTax;
+      return acc + taxAmountPerUnit * (parseFloat(item.qty) || 0);
+    }, 0);
+    const grandTotal = subtotal + totalTax;
     // Only auto-fill if user hasn't typed in amountInWords or it's empty
     if (!data.amountInWords || data.amountInWordsAuto) {
       setData(prev => ({
         ...prev,
-        amountInWords: numberToWords(Math.round(total)) + " birr only",
+        amountInWords: numberToWords(Math.round(grandTotal)) + " birr only",
         amountInWordsAuto: true
       }));
     }
