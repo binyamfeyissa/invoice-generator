@@ -43,21 +43,22 @@ const CustomerDetailsSection = ({ data }) => (
 
 // --- FOOTER: Repeats on every page ---
 const InvoiceFooter = () => (
-  <footer className="text-xs text-green-700 mt-4 pt-4 border-t-2 border-green-300 bg-white">
-    <div className="flex flex-row sm:flex-row sm:justify-between sm:items-center gap-2 sm:gap-0">
-      <div className="flex items-center gap-1 flex-row sm:flex-row">
-        <div className="flex items-center gap-1">
-          <Phone className="w-3 h-3 text-green-600" />
-          <span className="mb-3">+251942222666</span>
+  <footer className="text-[10px] text-green-900 mt-4 pt-4 border-t-2 border-green-300">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-0 w-full">
+      <div className="flex flex-row items-start gap-1 w-full sm:w-1/3">
+        <Phone className="w-3 h-3 text-green-900 mt-0.5" />
+        <div className="flex flex-col">
+          <span>+251913705830 /</span>
+          <span>+251 94 222 2666</span>
         </div>
       </div>
-      <div className="flex items-center gap-1">
-        <Mail className="w-3 h-3 text-green-600" />
-        <span className="mb-3">biniyamjegnaw@icloud.com</span>
+      <div className="flex flex-row items-start gap-1 w-full sm:w-1/3 mr-2">
+        <Mail className="w-3 h-3 text-green-900 mt-0.5" />
+        <span>biniyam@marssanitaryware.com</span>
       </div>
-      <div className="flex items-center gap-1">
-        <MapPin className="w-3 h-3 text-green-600" />
-        <span className="mb-3">kirkos sub city - woreda 01</span>
+      <div className="flex flex-row items-start gap-1 w-full sm:w-1/3">
+        <MapPin className="w-4 h-4 text-green-900 mt-0.5" />
+        <span>Urael to Atlas Road, Next to Axum Building, First Floor, Addis Ababa, Ethiopia</span>
       </div>
     </div>
   </footer>

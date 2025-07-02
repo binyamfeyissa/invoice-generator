@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { Phone, Mail } from "lucide-react"
+import { Phone, Mail, MapPin } from "lucide-react"
 
 // --- REPEATING HEADER: Logo and "PROFORMA INVOICE" text ---
 const RepeatingHeader = () => (
@@ -45,16 +45,22 @@ const CustomerDetailsSection = ({ data }) => (
 
 // --- FOOTER: Repeats on every page ---
 const InvoiceFooter = () => (
-  <footer className="text-xs text-gray-500 mt-auto pt-4 border-t-2 border-gray-100 text-center">
-    <p>Thank you for your business!</p>
-    <div className="flex justify-center items-center space-x-4 mt-2">
-      <div className="flex items-center space-x-1">
-        <Phone className="w-3 h-3" />
-        <span>+251913705830 / +251942222666</span>
+  <footer className="text-[10px] text-gray-500 mt-auto pt-4 border-t-2 border-gray-100 text-center">
+    <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-1 sm:gap-0 w-full">
+      <div className="flex flex-row items-start gap-1 w-full sm:w-1/3">
+        <Phone className="w-3 h-3 text-gray-500 mt-0.5" />
+        <div className="flex flex-col">
+          <span>+251913705830 /</span>
+          <span>+251 94 222 2666</span>
+        </div>
       </div>
-      <div className="flex items-center space-x-1">
-        <Mail className="w-3 h-3" />
-        <span>biniyamjegnaw@icloud.com</span>
+      <div className="flex flex-row items-start gap-1 w-full sm:w-1/3 mr-2">
+        <Mail className="w-3 h-3 text-gray-500 mt-0.5" />
+        <span>biniyam@marssanitaryware.com</span>
+      </div>
+      <div className="flex flex-row items-start gap-1 w-full sm:w-1/3">
+        <MapPin className="w-4 h-4 text-gray-500 mt-0.5" />
+        <span>Urael to Atlas Road, Next to Axum Building, First Floor, Addis Ababa, Ethiopia</span>
       </div>
     </div>
   </footer>
