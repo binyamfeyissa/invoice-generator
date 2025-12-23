@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { formatNumber } from "@/lib/utils"
 import { Phone, Mail, MapPin } from "lucide-react"
 
 // --- REPEATING HEADER: Logo and "PROFORMA INVOICE" text ---
@@ -220,8 +221,8 @@ const ProformaTemplate2 = ({ data }) => {
                         <td className="p-2 text-sm">{item.product}</td>
                         <td className="p-2 text-sm">{item.unit === 'CUSTOM' ? item.customUnit : (item.unit || 'PCS')}</td>
                         <td className="p-2 text-right text-sm">{item.qty || 0}</td>
-                        <td className="p-2 text-right text-sm">{unitPriceWithoutTax.toFixed(2)}</td>
-                        <td className="p-2 text-right text-sm">{(unitPriceWithoutTax * (item.qty || 0)).toFixed(2)}</td>
+                        <td className="p-2 text-right text-sm">{formatNumber(unitPriceWithoutTax)}</td>
+                        <td className="p-2 text-right text-sm">{formatNumber(unitPriceWithoutTax * (item.qty || 0))}</td>
                       </tr>
                     )
                   })}
@@ -231,17 +232,17 @@ const ProformaTemplate2 = ({ data }) => {
                     <tr>
                       <td colSpan="4" />
                       <td className="p-2 text-right text-sm text-gray-600">Sub Total</td>
-                      <td className="p-2 text-right text-sm">{subtotal.toFixed(2)}</td>
+                      <td className="p-2 text-right text-sm">{formatNumber(subtotal)}</td>
                     </tr>
                     <tr>
                       <td colSpan="4" />
                       <td className="p-2 text-right text-sm text-gray-600">VAT ({taxRate.toFixed(2)}%)</td>
-                      <td className="p-2 text-right text-sm">{totalTax.toFixed(2)}</td>
+                      <td className="p-2 text-right text-sm">{formatNumber(totalTax)}</td>
                     </tr>
                     <tr className="font-bold">
                       <td colSpan="4" />
                       <td className="p-2 text-right text-base">Grand Total</td>
-                      <td className="p-2 text-right text-base">{total.toFixed(2)}</td>
+                      <td className="p-2 text-right text-base">{formatNumber(total)}</td>
                     </tr>
                   </tfoot>
                 )}
